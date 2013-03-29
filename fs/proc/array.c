@@ -321,6 +321,12 @@ static inline void task_context_switch_counts(struct seq_file *m,
 			p->nivcsw);
 }
 
+static void task_vpid(struct seq_file *m, struct task_struct *task)
+{
+	struct pid_namespace *ns = task_active_pid_ns(task);
+	seq_printf(m, "Vpid:\t%d\n", ns ? task_pid_nr_ns(task, ns) : 0);
+}
+
 int proc_pid_status(struct seq_file *m, struct pid_namespace *ns,
 			struct pid *pid, struct task_struct *task)
 {
@@ -340,6 +346,7 @@ int proc_pid_status(struct seq_file *m, struct pid_namespace *ns,
 	task_show_regs(m, task);
 #endif
 	task_context_switch_counts(m, task);
+	task_vpid(m, task);
 	return 0;
 }
 
